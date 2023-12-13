@@ -1,0 +1,28 @@
+import requests
+from bs4 import BeautifulSoup
+import sys
+
+# SCRAPING ELEMENTARY EXERCISE: 
+# The goal is to get titles from rtv page
+
+url = "https://www.rtvslo.si/"
+
+# Sends an HTTP request to the URL
+response = requests.get(url)
+
+# Check if the request was successful (status code 200)
+if response.status_code == 200:
+    # Parse the HTML content of the page - parse is taking all html elements and organise them
+    soup = BeautifulSoup(response.text, "html.parser")
+    soup_text = str(soup)
+    with open(sys.path[0] + "/test_parsed_rtv", "w", encoding="utf-8") as file:
+        file.write(soup_text)
+
+    # Find all the HTML elements with a specific class (you need to inspect the HTML of the website)
+    # (Did not find perfect solution - html inspection needed)
+    post_titles = soup.find_all("a", {"aria-label": True})
+    # Print the titles of the top posts
+    for title in post_titles:
+        print(title.text.strip())
+else:
+    print(f"Failed to retrieve the page. Status code: {response.status_code}")
